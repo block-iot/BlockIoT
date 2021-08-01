@@ -1,0 +1,38 @@
+Device.sol
+- How to get data(API)
+- How to parse data
+- Which patient to send data to
+
+Patient.sol
+- Identify the patient
+- Which devices to call
+- Which physicians to send a specific device data to
+- How to make a graph for each physician type
+- When to alert the patient for each device
+- Alert preferences for each physician from each device
+
+Physician.sol
+- Which patient to ask graphs from
+- How to represent the graphs into the dashboard
+- Overall alert control(so you don't get 100 by mistake)
+
+
+code = """import requests
+import time
+import ciso8601
+
+def ripplehealth(url):
+    r = requests.get(url)
+    result = r.json()
+    data = dict()
+    rtime = 0
+    for element in result['data']['records']:
+        ts = ciso8601.parse_datetime(element)
+        rtime = int(time.mktime(ts.timetuple())) - int(time.mktime(ts.timetuple())) % 86400
+        if (str(rtime) in data):
+            data[str(rtime)] = str(int(data[str(rtime)]) + 1)
+        else:
+            data[str(rtime)] = str(1)
+    return data
+a = ripplehealth("https://ripple-health.net/api/medication/000141")
+"""
