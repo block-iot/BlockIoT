@@ -7,7 +7,7 @@
 
 ### Requirements
 1. IPFS(for hashing purposes only)
-2. Ethereum Geth
+2. Ethereum Solidity, Geth
 3. Python 3.8
 4. Python package requirements in `requirements.txt`. To install, please run `pip install -r requirements.txt`.
 
