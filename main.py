@@ -1,3 +1,8 @@
+# import os,json
+# if os.path.isfile("contract_data.json") == False:
+#     with open(r"contract_data.json", "x") as infile:
+#         json.dump({}, infile)
+
 from threading import Thread
 from register import * # type: ignore
 from blockchain import * # type: ignore

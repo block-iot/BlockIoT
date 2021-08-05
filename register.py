@@ -6,8 +6,6 @@ from oracle import * # type: ignore
 from pathlib import Path
 import hashlib,base64
 
-# with open(r"contract_data.json","w") as infile:
-#         json.dump({},infile)
 with open(r"contract_data.json","r") as infile:
     contract_data = json.load(infile)
 

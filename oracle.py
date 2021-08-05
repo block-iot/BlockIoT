@@ -13,6 +13,7 @@ import copy
 import subprocess
 import pretty_errors
 from Library.api import *
+import timeit
 
 with open(r"contract_data.json", "r") as infile:
     contract_data = json.load(infile)
@@ -33,83 +34,132 @@ def call_contract(key, function):
 
 # Delegator
 
+#Latency between a device and BlockIoT
+
+#Time to do:
+#Iterate through entire iteration of smart contracts
+#Time for RETEL Execution- patient.sol, and device.sol
+#Time to send information between contracts
+#Overall gas costs per storage transaction.
+#Time to parse device data?
+#Overall time to register a patient
+# Specific time to read, execute, transact, erase, etc. 
+#Time to send alert to physician and patient
 
 def oracle():
-    for key in contract_data.keys():
-        last = ''
-        contract = w3.eth.contract(
-            address=contract_data[key][2], abi=contract_data[key][0], bytecode=contract_data[key][1])
-        if contract.functions.return_type().call() == "device":
-            contract.functions.step1().transact()
-            with open("devices.txt", "r") as f:
-                last = f.read()
+    print("itr_diff, device_contract_diff, device_instruction_diff, device_transaction_end, device_transaction_diff, device_execute_diff, patient_contract_diff,pt_instruction_diff, patient_exec_diff")
+    for i in range(0,50):
+        itr_start_time = timeit.default_timer()
+        for key in contract_data.keys():
+            device_contract_start = timeit.default_timer()
+            last = ''
+            contract = w3.eth.contract(
+                address=contract_data[key][2], abi=contract_data[key][0], bytecode=contract_data[key][1])
+            if contract.functions.return_type().call() == "device":
+                device_transaction_start = timeit.default_timer()
+                contract.functions.step1().transact()
+                device_transaction_end = timeit.default_timer()
+                with open("devices.txt", "r") as f:
+                    last = f.read()
+                last = last.replace("**key**", "\'"+str(key)+"\'")
+                last += "device_key = \'" + key + "\'\n"
+                last += "patient_contract = w3.eth.contract(address=contract_data[**key**][2],abi=contract_data[**key**][0],bytecode=contract_data[**key**][1])"
+                last = last.replace(
+                "**key**", "\'"+str(contract.functions.get_patient_addr().call())+"\'")
+            else:
+                continue
+            device_instruction_start = timeit.default_timer()
+            length = contract.functions.get_event_length().call()
+            i = 0
+            instruction = ""
+            # Get Instruction
+            while i < length:
+                instruction += contract.functions.get_event(i).call()
+                i += 1
+            instruction_list = instruction.split("::")
+            # print(instruction_list)
+            # Execute one by one
+            # print(instruction_list)
+            if instruction_list == ['']:
+                continue
+            with open("sample.py", "w") as f:
+                f.write(last)
+            for element in instruction_list:
+                if element == '':
+                    continue
+                # print(element)
+                with open("sample.py", "a") as f:
+                    f.write("\n"+element+"\n")
+                # Return data if its there
+                # if type(data) == str and data != '':
+                #     contract.functions.set_data(str(data)).transact()
+                #     last = data
+            device_instruction_end = timeit.default_timer()
+            execute_start = timeit.default_timer()
+            exec(open('sample.py').read())
+            execute_end = timeit.default_timer()
+            contract.functions.clear_event().transact()
+            device_contract_end = timeit.default_timer()
+        for key in contract_data.keys():
+            patient_contract_start = timeit.default_timer()
+            last = ''
+            contract = w3.eth.contract(
+                address=contract_data[key][2], abi=contract_data[key][0], bytecode=contract_data[key][1])
+            if contract.functions.return_type().call() == "patient":
+                with open("patients.txt", "r") as f:
+                    last = f.read()
+            else:
+                continue
+            patient_instruction_start = timeit.default_timer()
+            length = contract.functions.get_event_length().call()
+            i = 0
+            instruction = ""
+            # Get Instruction
+            while i < length:
+                instruction += contract.functions.get_event(i).call()
+                i += 1
+            instruction_list = instruction.split("::")
+            # print(instruction_list)
+            # Execute one by one
+            last += "\ncontract = w3.eth.contract(address=contract_data[**key**][2],abi=contract_data[**key**][0],bytecode=contract_data[**key**][1])\n"
             last = last.replace("**key**", "\'"+str(key)+"\'")
-            last += "device_key = \'" + key + "\'\n"
-            last += "patient_contract = w3.eth.contract(address=contract_data[**key**][2],abi=contract_data[**key**][0],bytecode=contract_data[**key**][1])"
-            last = last.replace(
-            "**key**", "\'"+str(contract.functions.get_patient_addr().call())+"\'")
-        else:
-            continue
-        length = contract.functions.get_event_length().call()
-        i = 0
-        instruction = ""
-        # Get Instruction
-        while i < length:
-            instruction += contract.functions.get_event(i).call()
-            i += 1
-        instruction_list = instruction.split("::")
-        # print(instruction_list)
-        # Execute one by one
-       # print(instruction_list)
-        if instruction_list == ['']:
-            continue
-        with open("sample.py", "w") as f:
-            f.write(last)
-        for element in instruction_list:
-            if element == '':
+            # print(instruction_list)
+            if instruction_list == ['']:
                 continue
-            # print(element)
-            with open("sample.py", "a") as f:
-                f.write("\n"+element+"\n")
-            # Return data if its there
-            # if type(data) == str and data != '':
-            #     contract.functions.set_data(str(data)).transact()
-            #     last = data
-        exec(open('sample.py').read())
-    for key in contract_data.keys():
-        last = ''
-        contract = w3.eth.contract(
-            address=contract_data[key][2], abi=contract_data[key][0], bytecode=contract_data[key][1])
-        if contract.functions.return_type().call() == "patient":
-            with open("patients.txt", "r") as f:
-                last = f.read()
-        else:
-            continue
-        length = contract.functions.get_event_length().call()
-        i = 0
-        instruction = ""
-        # Get Instruction
-        while i < length:
-            instruction += contract.functions.get_event(i).call()
-            i += 1
-        instruction_list = instruction.split("::")
-        # print(instruction_list)
-        # Execute one by one
-        last += "\ncontract = w3.eth.contract(address=contract_data[**key**][2],abi=contract_data[**key**][0],bytecode=contract_data[**key**][1])\n"
-        last = last.replace("**key**", "\'"+str(key)+"\'")
-       # print(instruction_list)
-        if instruction_list == ['']:
-            continue
-        with open("sample.py", "w") as f:
-            f.write(last)
-        for element in instruction_list:
-            if element == '':
-                continue
-            # print(element)
-            with open("sample.py", "a") as f:
-                f.write("\n"+element+"\n")
-            # Return data if its there
-            # if type(data) == str and data != '':
-            #     contract.functions.set_data(str(data)).transact()
-            #     last = data
-        exec(open('sample.py').read(),globals())
+            with open("sample.py", "w") as f:
+                f.write(last)
+            for element in instruction_list:
+                if element == '':
+                    continue
+                # print(element)
+                with open("sample.py", "a") as f:
+                    f.write("\n"+element+"\n")
+                # Return data if its there
+                # if type(data) == str and data != '':
+                #     contract.functions.set_data(str(data)).transact()
+                #     last = data
+            patient_instruction_end = timeit.default_timer()
+            patient_exec_start = timeit.default_timer()
+            exec(open('sample.py').read(),globals())
+            patient_exec_end = timeit.default_timer()
+            contract.functions.clear_event().transact()
+            patient_contract_end = timeit.default_timer()
+        
+        itr_end_time = timeit.default_timer()
+        itr_diff = itr_end_time - itr_start_time
+        device_contract_diff = device_contract_end - device_contract_start
+        device_instruction_diff = device_instruction_end - device_instruction_start
+        device_transaction_diff = device_transaction_end - device_transaction_start
+        device_execute_diff = execute_end - execute_start
+
+        patient_contract_diff = patient_contract_end - patient_contract_start
+        pt_instruction_diff = patient_instruction_end - patient_instruction_start
+        patient_exec_diff = patient_exec_end - patient_exec_start
+        print("{0},{1},{2},{3},{4},{5},{6},{7}".format(itr_diff, device_contract_diff, device_instruction_diff, device_transaction_diff, device_execute_diff, patient_contract_diff,
+              pt_instruction_diff, patient_exec_diff))
+
+        # print("{0}--{1}--{2}".format(starttime,endtime,endtime-starttime))
+        time.sleep(20)
+
+#Output2- Total time to register a patient
+#Output3- Total time to deploy contract

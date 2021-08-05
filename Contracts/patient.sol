@@ -22,6 +22,17 @@ contract {{patient}} {
 
     mapping(string => uint) medical_data;
     string[] medical_key;
+    
+    mapping(string => string) patient_consent_data;
+    mapping(string => string[]) patient_consent_relatives;
+
+    //For how long(yrs)
+    //How long(hrs)
+    //Type of medical device
+    //Which physician
+    //Emergency contact
+    //Purpose
+    //auAtORgtVjE0pGTFxEuV9
 
     function return_type() public pure returns (string memory) {
         return "patient";
@@ -31,9 +42,11 @@ contract {{patient}} {
         if (repeat[_device_key] == true){
             return false;
         }
-        repeat[_device_key] = true;
-        device_key.push(_device_key);
-        device_data[_device_key] = [data,analysis_function,""];
+        else{
+            repeat[_device_key] = true;
+            device_key.push(_device_key);
+            device_data[_device_key] = [data,analysis_function,""];
+        }
         return true;
     }
 
@@ -73,7 +86,7 @@ contract {{patient}} {
     }
 
     function step1() public returns (bool){
-       for (uint i = 0; i < device_key.length; i++){
+       for (uint i = 0; i < 1; i++){
            the_event.push("::last = ");
            the_event.push(device_data[device_key[i]][0]);
            the_event.push("::report = ");

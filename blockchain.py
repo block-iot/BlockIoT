@@ -50,6 +50,3 @@ def deploy(name,device=False,patient=False):
     file1.close()
     with open(r"contract_data.json","w") as outfile:
         json.dump(contract_data, outfile)
-
-def deploy_templates(template_name):
-    deploy(template_name)

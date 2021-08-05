@@ -83,12 +83,10 @@ contract auAtORgtVjE0pGTFxEuV9 {
         the_event.push("\')");
         //Send data to patient.sol
         the_event.push("::patient_contract.functions.set_device_data(device_key,last,'adherence').transact()");
-        //the_event.push("::print(patient_contract.functions.get_device_data(device_key).call())");
         //Clear events and move to step 2
         the_event.push("::contract.functions.clear_event().transact()");
         the_event.push("::contract.functions.step2().transact()");
         the_event.push("::patient_contract.functions.step1().transact()");
-        the_event.push("::print('device done')");
         return true;
     }
     function step2() public returns (bool){
