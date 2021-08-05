@@ -47,8 +47,8 @@ def call_contract(key, function):
 #Time to send alert to physician and patient
 
 def oracle():
-    print("itr_diff, device_contract_diff, device_instruction_diff, device_transaction_end, device_transaction_diff, device_execute_diff, patient_contract_diff,pt_instruction_diff, patient_exec_diff")
-    for i in range(0,50):
+    #print("itr_diff, device_contract_diff, device_instruction_diff, device_transaction_end, device_transaction_diff, device_execute_diff, patient_contract_diff,pt_instruction_diff, patient_exec_diff")
+    for i in range(0,1):
         itr_start_time = time.time()
         for key in contract_data.keys():
             device_contract_start = time.time()
@@ -57,6 +57,8 @@ def oracle():
                 address=contract_data[key][2], abi=contract_data[key][0], bytecode=contract_data[key][1])
             if contract.functions.return_type().call() == "device":
                 device_transaction_start = time.time()
+                print("Device step1() Transaction gas estimate:",
+                      contract.functions.step1().estimateGas())
                 contract.functions.step1().transact()
                 device_transaction_end = time.time()
                 with open("devices.txt", "r") as f:
@@ -98,6 +100,8 @@ def oracle():
             execute_start = time.time()
             exec(open('sample.py').read())
             execute_end = time.time()
+            print("Device clear_event() Transaction gas estimate:",
+                  contract.functions.step1().estimateGas())
             contract.functions.clear_event().transact()
             device_contract_end = time.time()
         for key in contract_data.keys():
@@ -142,6 +146,8 @@ def oracle():
             patient_exec_start = time.time()
             exec(open('sample.py').read(),globals())
             patient_exec_end = time.time()
+            print("Patient clear_event() Transaction gas estimate:",
+                  contract.functions.step1().estimateGas())
             contract.functions.clear_event().transact()
             patient_contract_end = time.time()
         
@@ -155,8 +161,8 @@ def oracle():
         patient_contract_diff = patient_contract_end - patient_contract_start
         pt_instruction_diff = patient_instruction_end - patient_instruction_start
         patient_exec_diff = patient_exec_end - patient_exec_start
-        print("{0},{1},{2},{3},{4},{5},{6},{7}".format(itr_diff, device_contract_diff, device_instruction_diff, device_transaction_diff, device_execute_diff, patient_contract_diff,
-              pt_instruction_diff, patient_exec_diff))
+       # print("{0},{1},{2},{3},{4},{5},{6},{7}".format(itr_diff, device_contract_diff, device_instruction_diff, device_transaction_diff, device_execute_diff, patient_contract_diff,
+            #   pt_instruction_diff, patient_exec_diff))
 
         # print("{0}--{1}--{2}".format(starttime,endtime,endtime-starttime))
         #time.sleep(20)
