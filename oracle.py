@@ -49,16 +49,16 @@ def call_contract(key, function):
 def oracle():
     print("itr_diff, device_contract_diff, device_instruction_diff, device_transaction_end, device_transaction_diff, device_execute_diff, patient_contract_diff,pt_instruction_diff, patient_exec_diff")
     for i in range(0,50):
-        itr_start_time = timeit.default_timer()
+        itr_start_time = time.time()
         for key in contract_data.keys():
-            device_contract_start = timeit.default_timer()
+            device_contract_start = time.time()
             last = ''
             contract = w3.eth.contract(
                 address=contract_data[key][2], abi=contract_data[key][0], bytecode=contract_data[key][1])
             if contract.functions.return_type().call() == "device":
-                device_transaction_start = timeit.default_timer()
+                device_transaction_start = time.time()
                 contract.functions.step1().transact()
-                device_transaction_end = timeit.default_timer()
+                device_transaction_end = time.time()
                 with open("devices.txt", "r") as f:
                     last = f.read()
                 last = last.replace("**key**", "\'"+str(key)+"\'")
@@ -68,7 +68,7 @@ def oracle():
                 "**key**", "\'"+str(contract.functions.get_patient_addr().call())+"\'")
             else:
                 continue
-            device_instruction_start = timeit.default_timer()
+            device_instruction_start = time.time()
             length = contract.functions.get_event_length().call()
             i = 0
             instruction = ""
@@ -94,14 +94,14 @@ def oracle():
                 # if type(data) == str and data != '':
                 #     contract.functions.set_data(str(data)).transact()
                 #     last = data
-            device_instruction_end = timeit.default_timer()
-            execute_start = timeit.default_timer()
+            device_instruction_end = time.time()
+            execute_start = time.time()
             exec(open('sample.py').read())
-            execute_end = timeit.default_timer()
+            execute_end = time.time()
             contract.functions.clear_event().transact()
-            device_contract_end = timeit.default_timer()
+            device_contract_end = time.time()
         for key in contract_data.keys():
-            patient_contract_start = timeit.default_timer()
+            patient_contract_start = time.time()
             last = ''
             contract = w3.eth.contract(
                 address=contract_data[key][2], abi=contract_data[key][0], bytecode=contract_data[key][1])
@@ -110,7 +110,7 @@ def oracle():
                     last = f.read()
             else:
                 continue
-            patient_instruction_start = timeit.default_timer()
+            patient_instruction_start = time.time()
             length = contract.functions.get_event_length().call()
             i = 0
             instruction = ""
@@ -138,14 +138,14 @@ def oracle():
                 # if type(data) == str and data != '':
                 #     contract.functions.set_data(str(data)).transact()
                 #     last = data
-            patient_instruction_end = timeit.default_timer()
-            patient_exec_start = timeit.default_timer()
+            patient_instruction_end = time.time()
+            patient_exec_start = time.time()
             exec(open('sample.py').read(),globals())
-            patient_exec_end = timeit.default_timer()
+            patient_exec_end = time.time()
             contract.functions.clear_event().transact()
-            patient_contract_end = timeit.default_timer()
+            patient_contract_end = time.time()
         
-        itr_end_time = timeit.default_timer()
+        itr_end_time = time.time()
         itr_diff = itr_end_time - itr_start_time
         device_contract_diff = device_contract_end - device_contract_start
         device_instruction_diff = device_instruction_end - device_instruction_start
@@ -159,7 +159,7 @@ def oracle():
               pt_instruction_diff, patient_exec_diff))
 
         # print("{0}--{1}--{2}".format(starttime,endtime,endtime-starttime))
-        time.sleep(20)
+        #time.sleep(20)
 
 #Output2- Total time to register a patient
 #Output3- Total time to deploy contract
