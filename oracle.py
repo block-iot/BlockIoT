@@ -57,8 +57,6 @@ def oracle():
                 address=contract_data[key][2], abi=contract_data[key][0], bytecode=contract_data[key][1])
             if contract.functions.return_type().call() == "device":
                 device_transaction_start = time.time()
-                print("Device step1() Transaction gas estimate:",
-                      contract.functions.step1().estimateGas())
                 contract.functions.step1().transact()
                 device_transaction_end = time.time()
                 with open("devices.txt", "r") as f:
@@ -100,10 +98,8 @@ def oracle():
             execute_start = time.time()
             exec(open('sample.py').read())
             execute_end = time.time()
-            print("Device clear_event() Transaction gas estimate:",
-                  contract.functions.step1().estimateGas())
-            contract.functions.clear_event().transact()
             device_contract_end = time.time()
+        input("")
         for key in contract_data.keys():
             patient_contract_start = time.time()
             last = ''
@@ -146,11 +142,8 @@ def oracle():
             patient_exec_start = time.time()
             exec(open('sample.py').read(),globals())
             patient_exec_end = time.time()
-            print("Patient clear_event() Transaction gas estimate:",
-                  contract.functions.step1().estimateGas())
-            contract.functions.clear_event().transact()
             patient_contract_end = time.time()
-        
+        input("")
         itr_end_time = time.time()
         itr_diff = itr_end_time - itr_start_time
         device_contract_diff = device_contract_end - device_contract_start

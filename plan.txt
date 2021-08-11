@@ -4,35 +4,59 @@ Device.sol
 - Which patient to send data to
 
 Patient.sol
-- Identify the patient
 - Which devices to call
 - Which physicians to send a specific device data to
 - How to make a graph for each physician type
 - When to alert the patient for each device
 - Alert preferences for each physician from each device
 
+App:
+obtain_consent(collect, access, purpose, granularity, etc….)
++ send_alert_for_consent
++ return true/false
+
 Physician.sol
-- Which patient to ask graphs from
+- Determines which patient to ask graphs from
 - How to represent the graphs into the dashboard
 - Overall alert control(so you don't get 100 by mistake)
 
++ create_dashboard([”RH_pill_bottle.sol(instance)”,”blood_pressure(instance)”])
+++ for element in array: request_visualization(“patient.sol(instance)”,”RH_pill_bottle.sol(instance)”)
+++ python sort_dashboard(visualize_prefs)
+++ python create_dashboard()
 
-code = """import requests
-import time
-import ciso8601
+Data = [adherence_report_”RH_Pill_bottle”(instance), bp_report, glucose_report…]
++ send_alert(data)
+++ 
 
-def ripplehealth(url):
-    r = requests.get(url)
-    result = r.json()
-    data = dict()
-    rtime = 0
-    for element in result['data']['records']:
-        ts = ciso8601.parse_datetime(element)
-        rtime = int(time.mktime(ts.timetuple())) - int(time.mktime(ts.timetuple())) % 86400
-        if (str(rtime) in data):
-            data[str(rtime)] = str(int(data[str(rtime)]) + 1)
-        else:
-            data[str(rtime)] = str(1)
-    return data
-a = ripplehealth("https://ripple-health.net/api/medication/000141")
-"""
+register_patient(new_patient)
++ python create_patient.sol returns instance_hash
+++ 
+
+EHR_endpoint = []
+send_data_into_ehr([”RH_pill_bottle.sol(instance)”,”blood_pressure(instance)”])
++ python send_data(”RH_pill_bottle.sol(instance)”,EHR_endpoint)
+++ 
+
+get_data_from_ehr([fhir_condition_params])
++ python get_data([fhir_condition_params])
++ python send_ehr_data_patient([FHIR_bundle])
+
+create_summary([adherence_report_”RH_Pill_bottle”(instance), bp_report, glucose_report…])
++ python get_report([adherence_report_”RH_Pill_bottle”(instance), bp_report, glucose_report…])
+
+data_auth = [physician2(instance)]
+send_data_referral([adherence_report_”RH_Pill_bottle”(instance), bp_report, glucose_report…],physician_id(instance))
++ add_data_auth
++ patient.sol get_referral_consent
+
+send_data_referral(physician2(instance))
++ IF consent_taken
++ IF auth
+++ python get_report([adherence_report_”RH_Pill_bottle”(instance), bp_report, glucose_report…])
+++ python send_report_physician([adherence_report_”RH_Pill_bottle”(instance), bp_report, glucose_report…]physician_id(instance))
+
+main.py
+auth_physician(physician_data)
+auth_ehr(EHR_Data)
+register_physician

@@ -30,7 +30,6 @@ command = {
         "Dr.Pulmonologist":{
         }   
     }
-    
 }
 
 #When command arrives

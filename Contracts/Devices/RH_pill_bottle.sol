@@ -82,14 +82,10 @@ contract {{pill_bottle}} {
         the_event.push(details['url']);
         the_event.push("\')");
         //Send data to patient.sol
-        the_event.push("::print('Device set_device_data() Transaction gas estimate:',patient_contract.functions.set_device_data(device_key,last,'adherence').estimateGas())");
         the_event.push("::patient_contract.functions.set_device_data(device_key,last,'adherence').transact()");
         //Clear events and move to step 2
-        the_event.push("::print('Device clear_event_before_step2() Transaction gas estimate:',contract.functions.clear_event().estimateGas())");
         the_event.push("::contract.functions.clear_event().transact()");
-        the_event.push("::print('Device step2() Transaction gas estimate:',contract.functions.step2().estimateGas())");
         the_event.push("::contract.functions.step2().transact()");
-        the_event.push("::print('Patient step1() Transaction gas estimate:',contract.functions.step1().estimateGas())");
         the_event.push("::patient_contract.functions.step1().transact()");
         return true;
     }

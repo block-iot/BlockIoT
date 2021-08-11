@@ -1,8 +1,0 @@
-Device step1() Transaction gas estimate: 880879
-Device set_device_data() Transaction gas estimate: 279141
-Device clear_event_before_step2() Transaction gas estimate: 23578
-Device step2() Transaction gas estimate: 21518
-Patient step1() Transaction gas estimate: 880879
-Device clear_event() Transaction gas estimate: 863779
-Patient parse_adherence() Transaction gas estimate: 285944
-Patient clear_event() Transaction gas estimate: 506234

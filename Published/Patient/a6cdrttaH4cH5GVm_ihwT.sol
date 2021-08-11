@@ -94,7 +94,6 @@ contract a6cdrttaH4cH5GVm_ihwT {
            the_event.push("(last,'");
            the_event.push(specs);
            the_event.push("')");
-           the_event.push("::print('Patient parse_adherence() Transaction gas estimate:',contract.functions.adherence(report[0],report[1]).estimateGas())");
            the_event.push("::contract.functions.");
            the_event.push(device_data[device_key[i]][1]);
            the_event.push("(report[0],report[1]).transact()");
