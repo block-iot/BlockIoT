@@ -79,11 +79,11 @@ contract {{device}} {
         //Get data from api
         the_event.push("::retel_import parse");
         the_event.push("::retel_import general_imports");
-        the_event.push("::last = ripplehealth(\'");
+        the_event.push("::device_data = ripplehealth(\'");
         the_event.push(details['url']);
         the_event.push("\')");
         //Send data to patient.sol
-        the_event.push("::patient_contract.functions.set_device_data(device_key,last,'adherence').transact()");
+        the_event.push("::patient_contract.functions.set_device_data(device_key,device_data,'adherence').transact()");
         //Clear events and move to step 2
         the_event.push("::contract.functions.clear_event().transact()");
         the_event.push("::contract.functions.step2().transact()");
