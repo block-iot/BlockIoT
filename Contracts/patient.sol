@@ -77,6 +77,9 @@ contract {{patient}} {
     function get_event_length() public view returns (uint) {
         return the_event.length;
     }
+    function get_device_length() public view returns (uint) {
+        return device_key.length;
+    }
 
     function clear_event() public returns (bool) {
         for (uint i = 0; i < the_event.length; i++){
@@ -86,7 +89,8 @@ contract {{patient}} {
     }
 
     function step1() public returns (bool){
-       for (uint i = 0; i < 1; i++){
+       for (uint i = 0; i < device_key.length ; i++){
+           the_event.push("::retel_import adherence");
            the_event.push("::retel_import general_imports");
            the_event.push("::last = ");
            the_event.push(device_data[device_key[i]][0]);

@@ -5,7 +5,6 @@ import time
 from threading import Thread
 from web3.auto.gethdev import w3
 import plotly.graph_objects as go
-from datetime import datetime
 import schedule
 import ast
 import copy
@@ -77,8 +76,8 @@ def retel():
         else:
             continue
         read(contract, sub_contracts)
-        input("")
         execute_transact()
+        input("")
         erase()
     for key in contract_data.keys():
         contract = w3.eth.contract(
@@ -86,10 +85,11 @@ def retel():
             abi=contract_data[key][0],
             bytecode=contract_data[key][1])
         if contract.functions.return_type().call() == "patient":
-            contract.functions.step1().transact()
             sub_contracts = contracts.init_contracts_patient(key, contract)
         else:
             continue
         read(contract,sub_contracts)
+        print(contract.functions.get_device_length().call())
         execute_transact()
+        input("")
         erase()
