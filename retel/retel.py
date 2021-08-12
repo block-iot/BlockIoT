@@ -84,6 +84,7 @@ def retel():
             abi=contract_data[key][0],
             bytecode=contract_data[key][1])
         if contract.functions.return_type().call() == "patient":
+            contract.functions.step1().transact()
             sub_contracts = contracts.init_contracts_patient(key, contract)
         else:
             continue

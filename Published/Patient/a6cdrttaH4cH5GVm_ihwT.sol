@@ -92,11 +92,11 @@ contract a6cdrttaH4cH5GVm_ihwT {
        for (uint i = 0; i < device_key.length ; i++){
            the_event.push("::retel_import adherence");
            the_event.push("::retel_import general_imports");
-           the_event.push("::last = ");
+           the_event.push("::device_data = ");
            the_event.push(device_data[device_key[i]][0]);
            the_event.push("::report = ");
            the_event.push(device_data[device_key[i]][1]);
-           the_event.push("(last,'");
+           the_event.push("(device_data,'");
            the_event.push(specs);
            the_event.push("')");
            the_event.push("::contract.functions.");
