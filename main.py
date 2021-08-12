@@ -1,12 +1,14 @@
-# import os,json
-# if os.path.isfile("contract_data.json") == False:
-#     with open(r"contract_data.json", "x") as infile:
-#         json.dump({}, infile)
+import os,json
+import shutil
+# shutil.rmtree("Published/")
+# os.remove("contract_data.json")
+# with open(r"contract_data.json", "x") as infile:
+#     json.dump({}, infile)
 
 from threading import Thread
 from register import * # type: ignore
 from blockchain import * # type: ignore
-from oracle import * # type: ignore
+from retel.retel import * # type: ignore
 
 # Keywords such as BL_timestamp signify what type of data will be present there. 
 
@@ -20,7 +22,7 @@ command = {
     },
     "Device":{
         "RH_pill_bottle":{
-            "url": "https://ripple-health.net/api/medication/000203",
+            "url": "http://127.0.0.1:8000/sample.json",
             "medication_name":"Vitamin D",
             "Dosage":"10 mg",
             "Times per day":"1"
@@ -34,4 +36,4 @@ command = {
 
 #When command arrives
 registration(command)
-oracle()
+retel()

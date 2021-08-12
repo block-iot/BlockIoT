@@ -1,6 +1,6 @@
 pragma solidity >=0.4.16;
 
-contract {{pill_bottle}} {
+contract {{device}} {
     //Return data from python functions
     string data;
     string ipfs_hash;
@@ -76,8 +76,9 @@ contract {{pill_bottle}} {
             the_event.push("schedule.every(10).seconds.do(contract.functions.step1().transact())");
             scheduled = 1;
         }
-
         //Get data from api
+        the_event.push("::retel_import parse");
+        the_event.push("::retel_import general_imports");
         the_event.push("::last = ripplehealth(\'");
         the_event.push(details['url']);
         the_event.push("\')");

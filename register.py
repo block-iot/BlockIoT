@@ -2,7 +2,7 @@
 from web3.auto.gethdev import w3
 import json,os
 from blockchain import * # type: ignore
-from oracle import * # type: ignore
+from retel.retel import *  # type: ignore
 from pathlib import Path
 import hashlib,base64
 
@@ -35,7 +35,7 @@ def registration(config):
         pt_contract = str(file1.read())
         key = generate_key(config,str(config["Device"][element]))
         key = str(key)
-        pt_contract = pt_contract.replace("{{pill_bottle}}",str(key))
+        pt_contract = pt_contract.replace("{{device}}",str(key))
         f = open("Published/Device/"+str(key) + ".sol", "w")
         f.write(pt_contract)
         f.close()

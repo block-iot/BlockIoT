@@ -87,6 +87,7 @@ contract a6cdrttaH4cH5GVm_ihwT {
 
     function step1() public returns (bool){
        for (uint i = 0; i < 1; i++){
+           the_event.push("::retel_import general_imports");
            the_event.push("::last = ");
            the_event.push(device_data[device_key[i]][0]);
            the_event.push("::report = ");
