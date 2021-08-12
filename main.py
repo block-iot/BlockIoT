@@ -6,9 +6,9 @@ import shutil
 #     json.dump({}, infile)
 
 from threading import Thread
-from register import * # type: ignore
-from blockchain import * # type: ignore
-from retel.retel import * # type: ignore
+import register
+import blockchain
+import retel.retel as retel
 
 # Keywords such as BL_timestamp signify what type of data will be present there. 
 
@@ -35,5 +35,5 @@ command = {
 }
 
 #When command arrives
-registration(command)
-retel()
+register.registration(command)
+retel.retel()
