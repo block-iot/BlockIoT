@@ -77,7 +77,6 @@ def retel():
             continue
         read(contract, sub_contracts)
         execute_transact()
-        input("")
         erase()
     for key in contract_data.keys():
         contract = w3.eth.contract(
@@ -89,7 +88,5 @@ def retel():
         else:
             continue
         read(contract,sub_contracts)
-        print(contract.functions.get_device_length().call())
         execute_transact()
-        input("")
         erase()
