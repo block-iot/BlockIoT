@@ -6,9 +6,9 @@ import shutil
 #     json.dump({}, infile)
 
 from threading import Thread
-from register import * # type: ignore
-from blockchain import * # type: ignore
-from retel.retel import * # type: ignore
+import register
+import blockchain
+import retel.retel as retel
 
 # Keywords such as BL_timestamp signify what type of data will be present there. 
 
@@ -18,7 +18,7 @@ with open(r"config.json", "r") as infile:
 
 #When command arrives
 for value in physicians.values():
-    registration_real(value)
-    retel_initialize()
+    register.registration_real(value)
+    retel.retel_initialize()
 
-loop()
+retel.loop()

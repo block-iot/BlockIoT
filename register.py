@@ -1,8 +1,8 @@
 
 from web3.auto.gethdev import w3
 import json,os
-from blockchain import * # type: ignore
-from retel.retel import *  # type: ignore
+import blockchain
+import retel.retel # type: ignore
 from pathlib import Path
 import hashlib,base64
 
@@ -41,7 +41,7 @@ def registration(config):
     f = open("Published/Patient/"+str(key) + ".sol", "w")
     f.write(pt_contract)
     f.close()
-    deploy(str(key),patient=True)
+    blockchain.deploy(str(key),patient=True)
     add_patient_data(config,key)
     for element in list(config["Device"].keys()):
         if os.path.isdir("Published/Device/") == False:
@@ -54,7 +54,7 @@ def registration(config):
         f = open("Published/Device/"+str(key) + ".sol", "w")
         f.write(pt_contract)
         f.close()
-        deploy(str(key),device=True)
+        blockchain.deploy(str(key),device=True)
         add_device_data(config,key,element,patient_key)
 
     

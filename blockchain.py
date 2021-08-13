@@ -3,6 +3,7 @@ from solcx import compile_standard
 from web3 import Web3
 from web3 import EthereumTesterProvider
 from web3.auto.gethdev import w3
+from solcx import compile_source
 
 
 def deploy(name, device=False, patient=False, physician=False):
@@ -53,3 +54,19 @@ def deploy(name, device=False, patient=False, physician=False):
     file1.close()
     with open(r"contract_data.json","w") as outfile:
         json.dump(contract_data, outfile)
+
+
+def compile_source_file(file_path):
+   with open(file_path, 'r') as f:
+      source = f.read()
+
+   return compile_source(source)
+
+
+def deploy_contract(w3, contract_interface):
+    tx_hash = w3.eth.contract(
+        abi=contract_interface['abi'],
+        bytecode=contract_interface['bin']).constructor().transact()
+
+    address = w3.eth.get_transaction_receipt(tx_hash)['contractAddress']
+    return address
