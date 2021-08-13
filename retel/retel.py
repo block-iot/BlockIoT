@@ -18,6 +18,9 @@ with open(r"contract_data.json", "r") as infile:
     contract_data = json.load(infile)
 
 
+class ExecInterrupt(Exception):
+    pass
+
 def get_imports(package):
     with open("retel/libraries/"+package + ".py","r") as f:
         result = f.read()
@@ -26,6 +29,7 @@ def get_imports(package):
     return (imports, functions)
 
 def read(contract,sub_contracts):
+    print("running")
     length = contract.functions.get_event_length().call()
     i = 0
     instruction = ""
@@ -44,6 +48,10 @@ def read(contract,sub_contracts):
             (imports, functions) = get_imports(element.split(" ")[1])
             imports_file += imports
             functions_file += functions
+        elif "schedule" in element:
+            time = int(element.split(",")[1])
+            key = element.split(",")[2]
+            loop_exec(time,key)
         else:
             instruction_list_filtered.append(element)
     instruction_list = instruction_list_filtered
@@ -60,22 +68,32 @@ def read(contract,sub_contracts):
 def erase():
     open("retel/read.py", "w").close()
 
-def execute_transact():
-    exec(open('retel/read.py').read(), globals())
+def loop():
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
 
-def retel():
+def execute_transact():
+    try:
+        exec(open('retel/read.py').read(), globals())
+    except ExecInterrupt:
+        pass
+
+
+def retel_initialize():
     erase()
     for key in contract_data.keys():
         contract = w3.eth.contract(
             address=contract_data[key][2],
             abi=contract_data[key][0],
             bytecode=contract_data[key][1])
-        if contract.functions.return_type().call() == "device":
-            contract.functions.step1().transact()
-            sub_contracts = contracts.init_contracts_device(key, contract)
+        if contract.functions.return_type().call() == "physician":
+            contract.functions.initalize().transact()
+            sub_contracts = contracts.init_contracts_physician(key)
         else:
             continue
-        read(contract, sub_contracts)
+        read(contract,sub_contracts)
+        input()
         execute_transact()
         erase()
     for key in contract_data.keys():
@@ -84,10 +102,41 @@ def retel():
             abi=contract_data[key][0],
             bytecode=contract_data[key][1])
         if contract.functions.return_type().call() == "patient":
-            contract.functions.step1().transact()
-            sub_contracts = contracts.init_contracts_patient(key, contract)
+            sub_contracts = contracts.init_contracts_patient(key)
         else:
             continue
-        read(contract,sub_contracts)
+        read(contract, sub_contracts)
+        input()
         execute_transact()
         erase()
+    for key in contract_data.keys():
+        contract = w3.eth.contract(
+            address=contract_data[key][2],
+            abi=contract_data[key][0],
+            bytecode=contract_data[key][1])
+        if contract.functions.return_type().call() == "device":
+            sub_contracts = contracts.init_contracts_device(key,contract)
+        else:
+            continue
+        read(contract, sub_contracts)
+        input()
+        execute_transact()
+        erase()
+
+
+def loop_exec(time,key):
+    with open(r"contract_data.json", "r") as infile:
+        contract_data = json.load(infile)
+    contract = w3.eth.contract(
+        address=contract_data[key][2], abi=contract_data[key][0], bytecode=contract_data[key][1])
+    if contract.functions.return_type().call() == "device":
+        sub_contracts = contracts.init_contracts_device(key, contract)
+        schedule.every(int(time)).seconds.do(read,contract=contract,sub_contracts=sub_contracts)
+    if contract.functions.return_type().call() == "patient":
+        sub_contracts = contracts.init_contracts_patient(key, contract)
+        schedule.every(int(time)).seconds.do(
+            read, contract=contract, sub_contracts=sub_contracts)
+    if contract.functions.return_type().call() == "physician":
+        sub_contracts = contracts.init_contracts_physician(key, contract)
+        schedule.every(int(time)).seconds.do(
+            read, contract=contract, sub_contracts=sub_contracts)

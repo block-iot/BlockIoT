@@ -8,7 +8,7 @@ contract {{device}} {
     string str_patient;
     address device;
     string str_device;
-    uint scheduled = 1;
+    uint scheduled = 0;
     
     //For communicating commands to delegator
     string[] the_event;
@@ -73,7 +73,9 @@ contract {{device}} {
     function step1() public returns (bool){
         //Init: Schedule step 1 to run routinely
         if (scheduled == 0){
-            the_event.push("schedule.every(10).seconds.do(contract.functions.step1().transact())");
+            the_event.push("::retel_import general_imports");
+            the_event.push("::schedule,2,");
+            the_event.push(str_device);
             scheduled = 1;
         }
         //Get data from api
@@ -112,22 +114,4 @@ contract {{device}} {
     function get_patient_addr() public returns (string memory) {
         return str_patient;
     }
-
-    function send_data() public returns (bool){
-        (bool success, bytes memory data) = patient.delegatecall(abi.encodeWithSignature("set_data(string memory)", data));
-        //require(patient.call(bytes4(keccak256("set_data(string)")),data));
-        return success;
-    }
-
-    // function self_destruct() public returns (bool){
-    //     self destruct 
-    // }
-
-    // function send patient data() public returns (bool){
-    //     return [patient_alerts,patient_device_pointers,physician_pointers,graph_data]
-    // }
-
-    // function initialize(patient_data){
-
-    // }
 }

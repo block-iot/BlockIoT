@@ -12,28 +12,13 @@ from retel.retel import * # type: ignore
 
 # Keywords such as BL_timestamp signify what type of data will be present there. 
 
-command = {
-    "Patient":{
-        "first_name":"Jianjing",
-        "last_name":"Lin",
-        "dob":"01-12-1990",
-        "phone":"5162708383",
-        "email":"linj17@rpi.edu"
-    },
-    "Device":{
-        "RH_pill_bottle":{
-            "url": "http://127.0.0.1:8000/sample.json",
-            "medication_name":"Vitamin D",
-            "Dosage":"10 mg",
-            "Times per day":"1"
-        }
-    },
-    "Physician":{
-        "Dr.Pulmonologist":{
-        }   
-    }
-}
+physicians = {}
+with open(r"config.json", "r") as infile:
+    physicians = json.load(infile)
 
 #When command arrives
-registration(command)
-retel()
+for value in physicians.values():
+    registration_real(value)
+    retel_initialize()
+
+loop()

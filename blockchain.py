@@ -4,13 +4,16 @@ from web3 import Web3
 from web3 import EthereumTesterProvider
 from web3.auto.gethdev import w3
 
-def deploy(name,device=False,patient=False):
+
+def deploy(name, device=False, patient=False, physician=False):
     with open(r"contract_data.json","r") as infile:
         contract_data = json.load(infile)
     if device == True:
         file1 = open("Published/Device/"+name + ".sol","r")
     elif patient == True:
         file1 = open("Published/Patient/"+name + ".sol","r")
+    elif physician == True:
+        file1 = open("Published/Physician/"+name + ".sol", "r")
     else:
         file1 = open("Published/"+name + ".sol","r")
     compiled_sol = compile_standard({

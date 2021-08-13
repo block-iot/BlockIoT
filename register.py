@@ -9,6 +9,21 @@ import hashlib,base64
 with open(r"contract_data.json","r") as infile:
     contract_data = json.load(infile)
 
+
+def registration_real(config):
+    if os.path.isdir("Published/Physician/") == False:
+        os.mkdir("Published/Physician/")
+    file1 = open(r"Contracts/physician.sol", "r")
+    pt_contract = str(file1.read())
+    key = generate_key(config,str(config["Physician"]))
+    key = str(key)
+    pt_contract = pt_contract.replace("{{physician}}",str(key))
+    f = open("Published/Physician/"+str(key) + ".sol", "w")
+    f.write(pt_contract)
+    f.close()
+    deploy(str(key),physician=True)
+    add_physician_data(config,key)
+
 def registration(config):
     #Initial Checks
     if os.path.isdir("Published/") == False:
@@ -81,4 +96,16 @@ def add_patient_data(config,key):
     contract = w3.eth.contract(address=contract_data[key][2],abi=contract_data[key][0],bytecode=contract_data[key][1])
     for element in config["Patient"].keys():
         contract.functions.set_details(element,config["Patient"][element]).transact()
+    return True
+
+
+def add_physician_data(config, key):
+    contract_data = dict()
+    with open(r"contract_data.json", "r") as infile:
+        contract_data = json.load(infile)
+    contract = w3.eth.contract(
+        address=contract_data[key][2], abi=contract_data[key][0], bytecode=contract_data[key][1])
+    for element in config["Physician"].keys():
+        contract.functions.set_details(element, config["Physician"][element]).transact()
+        contract.functions.set_config(str(json.dumps(config))).transact()
     return True

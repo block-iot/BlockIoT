@@ -4,6 +4,7 @@ contract {{patient}} {
     
     //Return data from python functions
     uint time;
+    string config = "";
     string specs = "";
     address patient;
     //For communicating commands to delegator
@@ -26,21 +27,22 @@ contract {{patient}} {
     mapping(string => string) patient_consent_data;
     mapping(string => string[]) patient_consent_relatives;
 
-    //For how long(yrs)
-    //How long(hrs)
-    //Type of medical device
-    //Which physician
-    //Emergency contact
-    //Purpose
-    //auAtORgtVjE0pGTFxEuV9
-
     function return_type() public pure returns (string memory) {
         return "patient";
+    }
+    
+    function get_config() public view returns (string memory) {
+        return config;
+    }
+
+    function set_config(string memory _config) public returns (bool) {
+        config = _config;
+        return true;
     }
 
     function set_device_data(string memory _device_key,string memory data, string memory analysis_function) public returns (bool) {
         if (repeat[_device_key] == true){
-            return false;
+            device_data[_device_key] = [data,analysis_function,""];
         }
         else{
             repeat[_device_key] = true;
@@ -86,6 +88,20 @@ contract {{patient}} {
             the_event[i] = "";
         }
         return true;
+    }
+    
+    function create_devices(string memory pt_key) public returns (bool){
+        the_event.push("::retel_import general_imports");
+        the_event.push("::retel_import deploy");
+        the_event.push("::retel_import register_instance");
+        the_event.push("::str_config = contract.functions.get_config().call()");
+        the_event.push("::config = ast.literal_eval(str_config)");
+        the_event.push("::if check_config(config) == False: print('wtf')");
+        the_event.push("::patient_key = '");
+        the_event.push(pt_key);
+        the_event.push("'");
+        the_event.push("::register_init_device(config,patient_key,contract_data,contract)");
+        the_event.push("::contract.functions.clear_event().transact()");
     }
 
     function step1() public returns (bool){

@@ -11,7 +11,13 @@ def init_contracts_device(key,contract):
     return contracts
 
 
-def init_contracts_patient(key, contract):
+def init_contracts_patient(key):
+    contracts = "contract = w3.eth.contract(address=contract_data[**key**][2], abi=contract_data[**key**][0], bytecode=contract_data[**key**][1])\n"
+    contracts = contracts.replace("**key**", "\'"+str(key)+"\'")
+    return contracts
+
+
+def init_contracts_physician(key):
     contracts = "contract = w3.eth.contract(address=contract_data[**key**][2], abi=contract_data[**key**][0], bytecode=contract_data[**key**][1])\n"
     contracts = contracts.replace("**key**", "\'"+str(key)+"\'")
     return contracts
