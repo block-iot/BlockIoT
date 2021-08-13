@@ -12,6 +12,7 @@ with open(r"contract_data.json","r") as infile:
 
 def registration_real(config):
     if os.path.isdir("Published/Physician/") == False:
+        os.mkdir("Published/")
         os.mkdir("Published/Physician/")
     file1 = open(r"Contracts/physician.sol", "r")
     pt_contract = str(file1.read())
@@ -21,7 +22,7 @@ def registration_real(config):
     f = open("Published/Physician/"+str(key) + ".sol", "w")
     f.write(pt_contract)
     f.close()
-    deploy(str(key),physician=True)
+    blockchain.deploy(str(key),physician=True)
     add_physician_data(config,key)
 
 def registration(config):
