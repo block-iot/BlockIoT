@@ -59,6 +59,7 @@ def deploy(name, device=False, patient=False, physician=False):
     greeter = w3.eth.contract(address=tx_receipt.contractAddress,abi=abi)
     contract_data[name] = [abi,bytecode,tx_receipt.contractAddress]
     file1.close()
+    print(name)
     with open(r"contract_data.json","w") as outfile:
         json.dump(contract_data, outfile)
 

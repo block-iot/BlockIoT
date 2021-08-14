@@ -4,7 +4,14 @@ import ast
 import os
 import hashlib
 import base64
+import time
 #End_Imports
+
+
+def update_contracts():
+    with open(r"contract_data.json", "r") as infile:
+        contract_data = json.load(infile)
+    return contract_data
 
 
 def register_init_patient(config, contract_data, contract):
@@ -26,8 +33,8 @@ def register_init_patient(config, contract_data, contract):
     f.write(pt_contract)
     f.close()
     deploy(str(key), patient=True)
+    contract_data = update_contracts()
     add_patient_data(config, key)
-    print(key)
     contract.functions.create_patients(patient_key).transact()
     patient_contract = w3.eth.contract(
         address=contract_data[patient_key][2], abi=contract_data[patient_key][0], bytecode=contract_data[patient_key][1])
@@ -35,6 +42,7 @@ def register_init_patient(config, contract_data, contract):
 
 
 def register_init_device(config,patient_key,contract_data,contract):
+    time.sleep(2)
     with open(r"contract_data.json", "r") as infile:
         contract_data = json.load(infile)
     for element in list(config["Device"].keys()):
@@ -49,10 +57,10 @@ def register_init_device(config,patient_key,contract_data,contract):
         f.write(pt_contract)
         f.close()
         deploy(str(key), device=True)
+        contract_data = update_contracts()
         add_device_data(config, key, element, patient_key)
         device_contract = w3.eth.contract(
             address=contract_data[key][2], abi=contract_data[key][0], bytecode=contract_data[key][1])
-        print(key)
         contract.functions.set_device_data(
             str(generate_key(config)), "", "").transact()
         device_contract.functions.step1().transact()
