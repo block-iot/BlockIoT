@@ -1,10 +1,12 @@
 import multiprocessing
 import time,os,json,shutil
 from subprocess import DEVNULL, call
-
+import configparser
 
 def start_ethereum():
-    call(["geth", "--dev", "--ipcpath", "~/Library/Ethereum/geth.ipc"],
+    config = configparser.ConfigParser()
+    config.read('blockiot.ini')
+    call(["geth", "--dev", "--ipcpath", config['geth']['path']],
          stderr=DEVNULL, stdout=DEVNULL)
 
 
