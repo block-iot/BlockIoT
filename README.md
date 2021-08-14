@@ -6,10 +6,19 @@
 3. `pip install -r requirements.txt`
 
 ### Requirements
-1. IPFS(for hashing purposes only)
-2. Ethereum Solidity, Geth
-3. Python 3.8
+1. Python 3.8 (or above)
+2. Ethereum Solidity
+3. Geth
 4. Python package requirements in `requirements.txt`. To install, please run `pip install -r requirements.txt`.
+5. IPFS
+
+### Configuration
+In the `blockiot.ini` file please set the following.
+1. The Geth path
+2. Web3 Provider:
+    * Geth (Default)
+    * PyEVMBackend (Experimental)
+    * More to come ...
 
 ## Running
 
