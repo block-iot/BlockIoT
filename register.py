@@ -2,8 +2,8 @@
 # from web3.auto.gethdev import w3
 from web3.providers.eth_tester import EthereumTesterProvider
 from web3 import Web3
-from eth_tester import PyEVMBackend
-
+# from eth_tester import PyEVMBackend
+from web3.auto.gethdev import w3
 import json,os
 import blockchain
 import retel.retel # type: ignore
@@ -13,7 +13,7 @@ import hashlib,base64
 with open(r"contract_data.json","r") as infile:
     contract_data = json.load(infile)
 
-w3 = Web3(EthereumTesterProvider(PyEVMBackend()))
+
 
 def registration_real(config):
     if os.path.isdir("Published/Physician/") == False:
@@ -29,6 +29,11 @@ def registration_real(config):
     f.close()
     blockchain.deploy(str(key),physician=True)
     add_physician_data(config,key)
+    contract = w3.eth.contract(
+        address=contract_data[key][2],
+        abi=contract_data[key][0],
+        bytecode=contract_data[key][1])
+    print(contract.functions.return_type().call())
 
 def registration(config):
     #Initial Checks
