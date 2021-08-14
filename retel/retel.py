@@ -3,7 +3,11 @@ from register import *  # type: ignore
 from blockchain import *  # type: ignore
 import time
 from threading import Thread
-from web3.auto.gethdev import w3
+# from web3.auto.gethdev import w3
+from web3.providers.eth_tester import EthereumTesterProvider
+from web3 import Web3
+from eth_tester import PyEVMBackend
+
 import plotly.graph_objects as go
 import schedule
 import ast
@@ -16,6 +20,8 @@ import timeit
 
 with open(r"contract_data.json", "r") as infile:
     contract_data = json.load(infile)
+
+w3 = Web3(EthereumTesterProvider(PyEVMBackend()))
 
 
 class ExecInterrupt(Exception):
