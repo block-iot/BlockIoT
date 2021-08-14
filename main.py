@@ -3,14 +3,18 @@ import time,os,json,shutil
 from subprocess import DEVNULL, call
 from web3.auto.gethdev import w3
 import json
-import os
-import initialize
+import os,pyfiglet
+from colorama import init, Fore, Back, Style
 from pathlib import Path
 
 def start_ethereum():
     call(["geth", "--dev", "--ipcpath", "~/Library/Ethereum/geth.ipc"],
          stderr=DEVNULL, stdout=DEVNULL)
 
+
+def start_server():   
+    call(["python3", "-m", "http.server ", "8000"],
+         stderr=DEVNULL, stdout=DEVNULL)
 
 def start_ipfs():
     call(["ipfs", "daemon"], stderr=DEVNULL, stdout=DEVNULL)
@@ -39,12 +43,10 @@ def check_files():
 
 if __name__ == '__main__':
     call(["clear"])
-    p = multiprocessing.Process(target=start_ethereum)
-    p.start()
-    time.sleep(0.25)
-    print("Ethereum Started")
-    print("Doing some file checks...")
-    time.sleep(0.25)
+    result = pyfiglet.figlet_format("BlockIoT")
+    print(Fore.LIGHTCYAN_EX+result+Style.RESET_ALL)
+    print(Fore.LIGHTBLUE_EX,"Doing some file checks...")
+    time.sleep(2)
     check_files()
     print("Files Processed")
     print("Running additional checks...")
@@ -60,7 +62,8 @@ if __name__ == '__main__':
     p.start()
     time.sleep(3)
     p.terminate()
-    print("Starting Execution")
-    time.sleep(0.25)
+    print(Fore.LIGHTMAGENTA_EX,"Starting Execution", Style.RESET_ALL)
+    time.sleep(2)
+    import initialize
     initialize()
     

@@ -3,7 +3,7 @@ import time
 import plotly.graph_objects as go
 import schedule
 from . import contracts  # type: ignore
-
+from colorama import init, Fore, Back, Style
 
 def update_contracts():
     with open(r"contract_data.json", "r") as infile:
@@ -29,8 +29,8 @@ def get_imports(package):
     return (imports, functions)
 
 def read(contract,sub_contracts,key):
-    print("Reading:", key, "Type:",
-          contract.functions.return_type().call())
+    print(Fore.LIGHTCYAN_EX,"Reading:", key, "Type:",
+          contract.functions.return_type().call(), Style.RESET_ALL)
     if contract.functions.return_type().call() == "device":
         contract.functions.step1().transact()
     length = contract.functions.get_event_length().call()
@@ -58,7 +58,6 @@ def read(contract,sub_contracts,key):
         else:
             instruction_list_filtered.append(element)
     instruction_list = instruction_list_filtered
-    print("Loading Instructions")
     with open("retel/read.py", "a") as f:
         f.write(imports_file)
         f.write(functions_file)
@@ -72,8 +71,9 @@ def read(contract,sub_contracts,key):
     erase()
 
 def erase():
-    print("Erasing\n")
+    print(Fore.LIGHTRED_EX, "Erasing", Style.RESET_ALL)
     open("retel/read.py", "w").close()
+    print(Fore.LIGHTGREEN_EX, "Looping\n", Style.RESET_ALL)
 
 def loop():
     while True:
@@ -81,11 +81,12 @@ def loop():
         time.sleep(2)
 
 def execute_transact():
-    print("Executing")
+    print(Fore.LIGHTBLUE_EX, "Executing", Style.RESET_ALL)
     try:
         exec(open('retel/read.py').read(), globals())
     except ExecInterrupt:
         pass
+    print(Fore.LIGHTMAGENTA_EX, "Transacting", Style.RESET_ALL)
 
 
 def retel_initialize():
@@ -136,8 +137,8 @@ def loop_exec(time,key):
     contract_data = update_contracts()
     contract = w3.eth.contract(
         address=contract_data[key][2], abi=contract_data[key][0], bytecode=contract_data[key][1])
-    print("Scheduling:", key, "Type:",
-          contract.functions.return_type().call())
+    print(Fore.LIGHTYELLOW_EX,"Scheduling:", key, "Type:",
+          contract.functions.return_type().call(), Style.RESET_ALL)
     if contract.functions.return_type().call() == "device":
         sub_contracts = contracts.init_contracts_device(key, contract)
         schedule.every(int(time)).seconds.do(read,contract=contract,sub_contracts=sub_contracts,key=key)
