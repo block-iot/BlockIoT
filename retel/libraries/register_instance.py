@@ -17,8 +17,6 @@ def update_contracts():
 def register_init_patient(config, contract_data, contract):
     with open(r"contract_data.json", "r") as infile:
         contract_data = json.load(infile)
-    if os.path.isdir("Published/") == False:
-        os.mkdir("Published/")
     if check_config(config) == False:
         return False
     if os.path.isdir("Published/Patient/") == False:
@@ -42,12 +40,9 @@ def register_init_patient(config, contract_data, contract):
 
 
 def register_init_device(config,patient_key,contract_data,contract):
-    time.sleep(2)
     with open(r"contract_data.json", "r") as infile:
         contract_data = json.load(infile)
     for element in list(config["Device"].keys()):
-        if os.path.isdir("Published/Device/") == False:
-            os.mkdir("Published/Device/")
         file1 = open(r"Contracts/Devices/"+element+".sol", "r")
         pt_contract = str(file1.read())
         key = generate_key(config, str(config["Device"][element]))
@@ -64,6 +59,7 @@ def register_init_device(config,patient_key,contract_data,contract):
         contract.functions.set_device_data(
             str(generate_key(config)), "", "").transact()
         device_contract.functions.step1().transact()
+
 
 
 def check_config(config):
