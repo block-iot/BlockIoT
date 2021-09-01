@@ -6,22 +6,25 @@ from web3.auto.gethdev import w3
 #End_Imports
 
 
-def deploy(name, device=False, patient=False, physician=False):
+def deploy(name, device=False, patient=False, physician=False,data=""):
     with open(r"contract_data.json", "r") as infile:
         contract_data = json.load(infile)
-    if device == True:
-        file1 = open("Published/Device/"+name + ".sol", "r")
-    elif patient == True:
-        file1 = open("Published/Patient/"+name + ".sol", "r")
-    elif physician == True:
-        file1 = open("Published/Physician/"+name + ".sol", "r")
-    else:
-        file1 = open("Published/"+name + ".sol", "r")
+    if data == "":
+        if device == True:
+            file1 = open("Published/Device/"+name + ".sol", "r")
+        elif patient == True:
+            file1 = open("Published/Patient/"+name + ".sol", "r")
+        elif physician == True:
+            file1 = open("Published/Physician/"+name + ".sol", "r")
+        else:
+            file1 = open("Published/"+name + ".sol", "r")
+        data = file1.read()
+        file1.close()
     compiled_sol = compile_standard({
         "language": "Solidity",
         "sources": {
             name + ".sol": {
-                "content": file1.read()
+                "content": data
             }
         },
         "settings":
@@ -52,6 +55,5 @@ def deploy(name, device=False, patient=False, physician=False):
     # Create the contract instance with the newly-deployed address
     greeter = w3.eth.contract(address=tx_receipt.contractAddress, abi=abi)
     contract_data[name] = [abi, bytecode, tx_receipt.contractAddress]
-    file1.close()
     with open(r"contract_data.json", "w") as outfile:
         json.dump(contract_data, outfile)

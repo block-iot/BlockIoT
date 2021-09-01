@@ -3,7 +3,8 @@ import time,os,json,shutil
 from subprocess import DEVNULL, call
 from web3.auto.gethdev import w3
 import json
-import os,pyfiglet
+import os
+import pyfiglet
 from colorama import init, Fore, Back, Style
 from pathlib import Path
 
@@ -31,7 +32,15 @@ def start_main():
 def check_files():
     if os.path.isfile("contract_data.json"):
         os.remove("contract_data.json")
+    if os.path.isfile("config.json"):
+        os.remove("config.json")
+    if os.path.isfile("exec_time.json"):
+        os.remove("exec_time.json")
     with open(r"contract_data.json", "x") as infile:
+        json.dump({}, infile)
+    with open(r"exec_time.json", "x") as infile:
+        json.dump([], infile)
+    with open(r"config.json", "x") as infile:
         json.dump({}, infile)
     if os.path.isdir('Published/'):
         shutil.rmtree("Published/")
@@ -46,24 +55,23 @@ if __name__ == '__main__':
     result = pyfiglet.figlet_format("BlockIoT")
     print(Fore.LIGHTCYAN_EX+result+Style.RESET_ALL)
     print(Fore.LIGHTBLUE_EX,"Doing some file checks...")
-    time.sleep(2)
     check_files()
     print("Files Processed")
     print("Running additional checks...")
-    p = multiprocessing.Process(target=start_main)
-    p.start()
-    time.sleep(3)
-    p.terminate()
-    p = multiprocessing.Process(target=start_main)
-    p.start()
-    time.sleep(3)
-    p.terminate()
-    p = multiprocessing.Process(target=start_main)
-    p.start()
-    time.sleep(3)
-    p.terminate()
+    # p = multiprocessing.Process(target=start_main)
+    # p.start()
+    # time.sleep(3)
+    # p.terminate()
+    # p = multiprocessing.Process(target=start_main)
+    # p.start()
+    # time.sleep(3)
+    # p.terminate()
+    # p = multiprocessing.Process(target=start_main)
+    # p.start()
+    # time.sleep(3)
+    # p.terminate()
     print(Fore.LIGHTMAGENTA_EX,"Starting Execution", Style.RESET_ALL)
     time.sleep(2)
     import initialize
-    initialize()
+    initialize.initialize()
     

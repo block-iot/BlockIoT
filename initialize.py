@@ -4,6 +4,9 @@ import hashlib
 import base64
 from web3.auto.gethdev import w3
 from retel.libraries.deploy import deploy
+import time
+import threading
+import multiprocessing
 
 def update_contracts():
     with open(r"contract_data.json", "r") as infile:
@@ -29,16 +32,10 @@ def register_init_physician(config):
     key = generate_key(config, str(config["Physician"]))
     key = str(key)
     pt_contract = pt_contract.replace("{{physician}}", str(key))
-    f = open("Published/Physician/"+str(key) + ".sol", "w")
-    f.write(pt_contract)
-    f.close()
-    deploy(str(key), physician=True)
-    add_physician_data(config, key)
-    contract_data = update_contracts()
-    contract = w3.eth.contract(
-        address=contract_data[key][2],
-        abi=contract_data[key][0],
-        bytecode=contract_data[key][1])
+    # f = open("Published/Physician/"+str(key) + ".sol", "w")
+    # f.write(pt_contract)
+    # f.close()
+    deploy(str(key), physician=True,data=pt_contract)
 
 def generate_key(config, device=""):
     config1 = config["Patient"]
@@ -65,12 +62,70 @@ def add_physician_data(config, key):
         contract.functions.set_config(str(json.dumps(config))).transact()
     return True
 
-physicians = {}
-with open(r"config.json", "r") as infile:
-    physicians = json.load(infile)
+def chunkIt(seq, num):
+    avg = len(seq) / float(num)
+    out = []
+    last = 0.0
+    while last < len(seq):
+        out.append(seq[int(last):int(last + avg)])
+        last += avg
+    return out
 
-for value in physicians.values():
-    register_init_physician(value)
-    retel.retel_initialize()
+def chunk_register(chunk):
+    for element in chunk:
+        register_init_physician(element)
 
-retel.loop()
+def chunk_add(chunk):
+    for element in chunk:
+        key = generate_key(element, str(element["Physician"]))
+        key = str(key)
+        add_physician_data(element, key)
+
+def initialize():
+    physicians = {}
+    with open(r"config.json", "r") as infile:
+        physicians = json.load(infile)
+    #1,5,10,20,40,80,160,320,640
+    for j in [1,3,5,7,10,15]:
+        with open(r"config.json", "w") as outfile:
+            json.dump({},outfile)
+        for i in range(0,j):
+            with open(r"template.json", "r") as infile:
+                template = json.load(infile)
+            template["Patient"]["first_name"] = str(i)
+            template["Physician"]["first_name"] = str(i)
+            template["Device"]["RH_pill_bottle"]["medication_name"] = str(i)
+            physicians[str(i)] = template
+        with open(r"config.json", "w") as outfile:
+            json.dump(physicians,outfile)
+        with open(r"config.json", "r") as infile:
+            physicians = json.load(infile)
+        jobs = []
+        for element in chunkIt(list(physicians.values()),10):
+            chunk_register(element)
+        #     p = multiprocessing.Process(target=chunk_register,args=(element,))
+        #     jobs.append(p)
+        #     p.start()
+        # for job in jobs:
+        #     job.join()
+        for element in chunkIt(list(physicians.values()),10):
+            chunk_add(element)
+            #p = multiprocessing.Process(target=chunk_add,args=(element,))
+        #     jobs.append(p)
+        #     p.start()
+        # for job in jobs:
+        #     job.join()
+        #p = multiprocessing.Process(target=register,args=(element))
+        # for value in physicians.values():
+        #     t1 = Thread(target=oracle_handler).start()
+        #     register_init_physician(value)
+        print("Finished")
+        contract_data = update_contracts()
+        with open(r"contract_data.json", "r") as infile:
+            config = json.load(infile)
+        retel.retel_initialize()
+        retel.loop()
+        if os.path.isfile("exec_time.json"):
+            os.remove("exec_time.json")
+        with open(r"exec_time.json", "x") as infile:
+            json.dump([], infile)
