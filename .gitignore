@@ -4,4 +4,5 @@ __pycache__
 sample.py
 contract_data.json
 git_stuff.txt
-read.py
+retel/read.py
+exec_time.json
