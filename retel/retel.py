@@ -105,7 +105,7 @@ def loop():
         for element in times:
             for element2 in times:
                 if list(element.keys())[0] == list(element2.keys())[0] and element[list(element.keys())[0]] != element2[list(element2.keys())[0]]:
-                    with open("/Users/mananshukla/Documents/blockiot3.0/bottleneck.txt","a") as f:
+                    with open("../bottleneck.txt","a") as f:
                         result = str(abs(element[list(element.keys())[0]] - element2[list(element2.keys())[0]]))+"\n"
                         f.write(result)
                         return
