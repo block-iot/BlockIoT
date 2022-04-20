@@ -7,6 +7,7 @@ import os,pyfiglet
 from colorama import init, Fore, Back, Style
 from pathlib import Path
 
+
 def start_ethereum():
     call(["geth", "--dev", "--ipcpath", "~/Library/Ethereum/geth.ipc"],
          stderr=DEVNULL, stdout=DEVNULL)
@@ -15,6 +16,12 @@ def start_ethereum():
 def start_server():   
     call(["python3", "-m", "http.server ", "8000"],
          stderr=DEVNULL, stdout=DEVNULL)
+
+
+def update_contracts():
+    with open(r"contract_data.json", "r") as infile:
+        contract_data = json.load(infile)
+    return contract_data
 
 def start_ipfs():
     call(["ipfs", "daemon"], stderr=DEVNULL, stdout=DEVNULL)
@@ -50,18 +57,18 @@ if __name__ == '__main__':
     check_files()
     print("Files Processed")
     print("Running additional checks...")
-    p = multiprocessing.Process(target=start_main)
-    p.start()
-    time.sleep(3)
-    p.terminate()
-    p = multiprocessing.Process(target=start_main)
-    p.start()
-    time.sleep(3)
-    p.terminate()
-    p = multiprocessing.Process(target=start_main)
-    p.start()
-    time.sleep(3)
-    p.terminate()
+    # p = multiprocessing.Process(target=monitor_requests)
+    # p.start()
+    # time.sleep(3)
+    # p.terminate()
+    # p = multiprocessing.Process(target=start_main)
+    # p.start()
+    # time.sleep(3)
+    # p.terminate()
+    # p = multiprocessing.Process(target=start_main)
+    # p.start()
+    # time.sleep(3)
+    # p.terminate()
     print(Fore.LIGHTMAGENTA_EX,"Starting Execution", Style.RESET_ALL)
     time.sleep(2)
     import initialize
