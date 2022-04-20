@@ -23,7 +23,7 @@ def publish_data(data,medication,dose):
             "systolic": [str(int(today_time+2)),systolic_bp],
             "diastolic": [str(int(today_time+3)),diastolic_bp]
         }
-        with open("/home/shuklm/Code/BlockIoT_3.0/output.json","w") as f:
+        with open("output.json","w") as f:
             json.dump(some_dict, f)
         f.close()
     else:

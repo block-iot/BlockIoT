@@ -6,20 +6,20 @@ import json,csv
 
 def ripplehealth(url):
     count = 0
-    with open("/home/shuklm/Code/BlockIoT_3.0/count.txt","r") as f:
+    with open("count.txt","r") as f:
         count = int(f.read())
     f.close()
     if count > 150:
         count = 0
     data = []
-    with open("/home/shuklm/Code/BlockIoT_3.0/249.csv","r") as csv_file:
+    with open("249.csv","r") as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         a = 0
         for row in csv_reader:
             a += 1
             if a == count:
                 data = row
-    with open("/home/shuklm/Code/BlockIoT_3.0/count.txt","w") as f:
+    with open("count.txt","w") as f:
         f.write(str(count+1))
     f.close()
     # result = r.json()

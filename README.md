@@ -42,12 +42,11 @@ In the `blockiot.ini` file please set the following.
 
 
 # Quick Commands
-cd /home/shuklm/Code/BlockIoT_3.0
-source /home/shuklm/env/bin/activate
-cd geth
-./geth --dev --ipcpath ~/Library/Ethereum/geth.ipc
-cd go-ipfs
-./ipfs daemon
+cd /var/opt/BlockIoT
+source env/bin/activate
+geth --dev --ipcpath /var/opt/BlockIoT/geth.ipc
+ipfs daemon
 python3 -m http.server 8000
-export WEB3_PROVIDER_URI="/home/shuklm/Library/Ethereum/geth.ipc"
-python3 /home/shuklm/Code/BlockIoT_3.0/main.py
+export WEB3_PROVIDER_URI="~/Library/Ethereum/geth.ipc"
+sudo python3 /var/opt/BlockIoT/main.py
+sudo python3 /var/opt/BlockIoT/client_sim.py
