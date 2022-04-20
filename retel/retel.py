@@ -1,7 +1,7 @@
 import json
-import time
 import plotly.graph_objects as go
 import schedule
+import time
 from . import contracts  # type: ignore
 from colorama import init, Fore, Back, Style
 
@@ -28,9 +28,9 @@ def get_imports(package):
     functions = result.split("#End_Imports")[1]
     return (imports, functions)
 
-def read(contract,sub_contracts,key):
+def read(contract,sub_contracts,key,actual="real"):
     print(Fore.LIGHTCYAN_EX,"Reading:", key, "Type:",
-          contract.functions.return_type().call(), Style.RESET_ALL)
+         contract.functions.return_type().call(), Style.RESET_ALL)
     if contract.functions.return_type().call() == "device":
         contract.functions.step1().transact()
     length = contract.functions.get_event_length().call()
@@ -42,6 +42,7 @@ def read(contract,sub_contracts,key):
         i += 1
     instruction_list = instruction.split("::")
     if instruction_list == ['']:
+        #print(Fore.LIGHTYELLOW_EX,"Reading: No Instruction Found", Style.RESET_ALL)
         return
     imports_file = ""
     functions_file = ""
@@ -52,9 +53,9 @@ def read(contract,sub_contracts,key):
             imports_file += imports
             functions_file += functions
         elif "schedule" in element:
-            time = int(element.split(",")[1])
+            sch_time = int(element.split(",")[1])
             key = element.split(",")[2]
-            loop_exec(time,key)
+            loop_exec(sch_time,key)
         else:
             instruction_list_filtered.append(element)
     instruction_list = instruction_list_filtered
@@ -69,6 +70,10 @@ def read(contract,sub_contracts,key):
             f.write("\n"+element+"\n")
     execute_transact()
     erase()
+    # if actual != "fake":
+    #     with open("/Users/mananshukla/Documents/blockiot3.0/bottleneck.txt","a") as f:
+    #         result = str(read)+","+str(exec_trans)+","+str(eras)+"\n"
+    #         f.write(result)
 
 def erase():
     print(Fore.LIGHTRED_EX, "Erasing", Style.RESET_ALL)
@@ -78,7 +83,7 @@ def erase():
 def loop():
     while True:
         schedule.run_pending()
-        time.sleep(2)
+
 
 def execute_transact():
     print(Fore.LIGHTBLUE_EX, "Executing", Style.RESET_ALL)
@@ -92,7 +97,7 @@ def execute_transact():
 def retel_initialize():
     erase()
     contract_data = update_contracts()
-    print("Initializing Physician Smart Contracts")
+    #print"Initializing Physician Smart Contracts")
     for key in contract_data.keys():
         contract = w3.eth.contract(
             address=contract_data[key][2],
@@ -103,10 +108,10 @@ def retel_initialize():
             sub_contracts = contracts.init_contracts_physician(key)
         else:
             continue
-        read(contract, sub_contracts, key)
+        read(contract, sub_contracts, key,"fake")
 
     contract_data = update_contracts()
-    print("Initializing Patient Smart Contracts")
+    #print"Initializing Patient Smart Contracts")
     for key in contract_data.keys():
         contract = w3.eth.contract(
             address=contract_data[key][2],
@@ -116,10 +121,10 @@ def retel_initialize():
             sub_contracts = contracts.init_contracts_patient(key)
         else:
             continue
-        read(contract, sub_contracts,key)
+        read(contract, sub_contracts,key,"fake")
 
     contract_data = update_contracts()
-    print("Initializing Device Smart Contracts")
+    #print("Initializing Device Smart Contracts")
     for key in contract_data.keys():
         contract = w3.eth.contract(
             address=contract_data[key][2],
@@ -129,24 +134,22 @@ def retel_initialize():
             sub_contracts = contracts.init_contracts_device(key,contract)
         else:
             continue
-        read(contract, sub_contracts, key)
+        read(contract, sub_contracts, key,"fake")
 
-
-
-def loop_exec(time,key):
+def loop_exec(sch_time,key):
     contract_data = update_contracts()
     contract = w3.eth.contract(
         address=contract_data[key][2], abi=contract_data[key][0], bytecode=contract_data[key][1])
-    print(Fore.LIGHTYELLOW_EX,"Scheduling:", key, "Type:",
-          contract.functions.return_type().call(), Style.RESET_ALL)
+    #printFore.LIGHTYELLOW_EX,"Scheduling:", key, "Type:",
+        #   contract.functions.return_type().call(), Style.RESET_ALL)
     if contract.functions.return_type().call() == "device":
         sub_contracts = contracts.init_contracts_device(key, contract)
-        schedule.every(int(time)).seconds.do(read,contract=contract,sub_contracts=sub_contracts,key=key)
+        schedule.every(int(sch_time)).seconds.do(read,contract=contract,sub_contracts=sub_contracts,key=key)
     if contract.functions.return_type().call() == "patient":
         sub_contracts = contracts.init_contracts_patient(key, contract)
-        schedule.every(int(time)).seconds.do(
+        schedule.every(int(sch_time)).seconds.do(
             read, contract=contract, sub_contracts=sub_contracts, key=key)
     if contract.functions.return_type().call() == "physician":
         sub_contracts = contracts.init_contracts_physician(key, contract)
-        schedule.every(int(time)).seconds.do(
+        schedule.every(int(sch_time)).seconds.do(
             read, contract=contract, sub_contracts=sub_contracts, key=key)

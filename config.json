@@ -9,7 +9,7 @@
     },
     "Device": {
       "RH_pill_bottle": {
-        "url": "http://127.0.0.1:8000/sample.json",
+        "url": "http://localhost:8000/Code/BlockIoT_3.0/sample.json",
         "medication_name": "Vitamin D",
         "Dosage": "10 mg",
         "Times per day": "1"

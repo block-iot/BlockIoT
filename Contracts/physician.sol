@@ -82,6 +82,7 @@ contract {{physician}} {
         the_event.push("::str_config = contract.functions.get_config().call()");
         the_event.push("::config = ast.literal_eval(str_config)");
         the_event.push("::if check_config(config) == False: exit(0)");
+        the_event.push("::print(config)");
         the_event.push("::register_init_patient(config,contract_data,contract)");
         return true;
     }

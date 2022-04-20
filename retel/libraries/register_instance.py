@@ -21,7 +21,7 @@ def register_init_patient(config, contract_data, contract):
         return False
     if os.path.isdir("Published/Patient/") == False:
         os.mkdir("Published/Patient/")
-    file1 = open(r"Contracts/Patient.sol", "r")
+    file1 = open(r"Contracts/patient.sol", "r")
     pt_contract = str(file1.read())
     key = generate_key(config, str(config["Patient"]))
     key = str(key)

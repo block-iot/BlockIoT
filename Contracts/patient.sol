@@ -121,6 +121,25 @@ contract {{patient}} {
        }
        return true;
     }
+    function publish_data() public returns (bool) {
+        for (uint i = 0; i < device_key.length ; i++){
+           the_event.push("::retel_import adherence");
+           the_event.push("::retel_import publish");
+           the_event.push("::retel_import general_imports");
+           the_event.push("::device_data = ");
+           the_event.push(device_data[device_key[i]][0]);
+           the_event.push("::report = ");
+           the_event.push(device_data[device_key[i]][1]);
+           the_event.push("(device_data,'");
+           the_event.push(specs);
+           the_event.push("')");
+           the_event.push("::contract.functions.");
+           the_event.push(device_data[device_key[i]][1]);
+           the_event.push("(report[0],report[1]).transact()");
+           the_event.push("::publish_data(device_data)");
+       }
+       return true;
+    }
     function adherence(string[] memory keys,uint[] memory values) public returns (bool){
         //Data is data * 100!
         medical_key = keys;
