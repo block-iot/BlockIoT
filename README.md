@@ -47,6 +47,7 @@ source env/bin/activate
 geth --dev --ipcpath /var/opt/BlockIoT/geth.ipc
 ipfs daemon
 python3 -m http.server 8000
-export WEB3_PROVIDER_URI="~/Library/Ethereum/geth.ipc"
+Do in sudo su:
+export WEB3_PROVIDER_URI="/var/opt/BlockIoT/geth.ipc" 
 sudo python3 /var/opt/BlockIoT/main.py
 sudo python3 /var/opt/BlockIoT/client_sim.py

@@ -36,6 +36,15 @@ def start_main():
 
 
 def check_files():
+    with open("/var/opt/BlockIoT_UI/SEMRinterface/static/js/iot_hr.json","w") as f:
+        some_dict = {
+    "Heart Rate": [],
+    "Blood Glucose": [],
+    "Systolic BP": [],
+    "Diastolic BP": []
+    }
+        json.dump(some_dict, f)
+    f.close()
     if os.path.isfile("contract_data.json"):
         os.remove("contract_data.json")
     with open(r"contract_data.json", "x") as infile:
