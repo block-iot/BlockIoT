@@ -49,5 +49,5 @@ ipfs daemon
 python3 -m http.server 8000
 Do in sudo su:
 export WEB3_PROVIDER_URI="/var/opt/BlockIoT/geth.ipc" 
-sudo python3 /var/opt/BlockIoT/main.py
+python3 /var/opt/BlockIoT/main.py
 sudo python3 /var/opt/BlockIoT/client_sim.py

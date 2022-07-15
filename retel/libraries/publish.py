@@ -18,7 +18,7 @@ def publish_data(data,medication,dose):
         diastolic_bp = int(np.random.normal(loc=50, scale=9, size=None))
         today_time = time.time()
         some_dict = dict()
-        with open("/var/opt/BlockIoT_UI/SEMRinterface/static/js/iot_hr.json","r") as f:
+        with open("/Users/manan/Documents/Block_UI/BlockIoT_UI/SEMRinterface/static/js/iot_hr.json", "r") as f:
             some_dict = json.load(f)
         f.close()
         some_dict2 = {
@@ -29,8 +29,9 @@ def publish_data(data,medication,dose):
         }
         for key in some_dict2.keys():
             some_dict[key].append(some_dict2[key])
-        with open("/var/opt/BlockIoT_UI/SEMRinterface/static/js/iot_hr.json","w") as f:
+        with open("/Users/manan/Documents/Block_UI/BlockIoT_UI/SEMRinterface/static/js/iot_hr.json", "w") as f:
             json.dump(some_dict, f)
         f.close()
     else:
         pass
+
